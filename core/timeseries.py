@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 class TimeSeries:
@@ -18,16 +19,33 @@ class TimeSeries:
     def load_data(self,data):
         """Loads the input data into the timeseries object
 
-        :param data:
+        :param data: dict, array-like, pd.Series
         :return:
         """
+        if isinstance(data,list):
+            try:
+                data = np.array(data)
+            except:
+                raise "Can't convert list to string!"
+
         # If the data is an array, default to using array index as time series index
-        if isinstance(data,np.array()):
-            self.data = pd.Series(data=data,index=list(range(len(data))) + 1)
+        if type(data).__module__ == np.__name__:
+            if data.shape[1] == 1:
+                self.data = pd.Series(data=data,index=list(range(len(data))) + 1)
+            elif data.shape[1] == 2:
+                self.data = pd.Series(data=data[1],index=data[1])
             return
 
+        if isinstance(data,dict):
+            pass
+
+        if isinstance(data,pd.Series):
+            self.data = data
+            return
+
+
         # If the index of data is string, change the format to datetime
-        if isinstance(data, String):
+        if isinstance(data, str):
             # Check if data is a filename
             if data[-4:] == ".csv" or data[-4:] == ".txt":
 
