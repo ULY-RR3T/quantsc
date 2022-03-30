@@ -13,8 +13,20 @@ def QSC.Stock.plot_earnings(stock: str): #, earnings_date: datetime):
     frame = pd.DataFrame.from_dict(stock_earning_history)
     return frame.plot(x="startdatetime", y="espactual")
 
+def QSC.Stock.balance_sheet(stock: str, yearly = True):
+    return si.get_balance_sheet(stock, yearly)
 
+def QSC.Stock.cash_flow(stock: str, yearly = True):
+    return si.get_cash_flow(stock, yearly)
 
+def QSC.Stock.income_statement(stock: str, yearly = True):
+    return si.get_income_statement(stock, yearly)
+
+def QSC.Stock.next_earnings_date(stock: str):
+    return si.get_next_earnings_date(stock)
+
+def QSC.Stock.dividends(stock: str) # can have specified date for onwards
+    return si.get_dividends(stock)
 
 
 
