@@ -6,6 +6,7 @@ import yahoo_fin.stock_info as si
 #http://theautomatic.net/yahoo_fin-documentation/
 #http://theautomatic.net/yahoo_fin-documentation/#methods
 
+
 def QSC.Stock.plot_earnings(stock: str): #, earnings_date: datetime):
     #get earning_history (no specified date)
 
