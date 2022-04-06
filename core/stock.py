@@ -60,7 +60,7 @@ class Stock:
     def next_earnings_date(self):
         return si.get_next_earnings_date(self.ticker)
 
-    def dividends(self) # can have specified date for onwards
+    def dividends(self): # can have specified date for onwards
         return si.get_dividends(self.ticker)
 
 
