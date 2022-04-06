@@ -60,11 +60,9 @@ class TimeSeries:
             if data[-4:] == ".txt":
                 pass
 
-
-
             # Else, data is a string representing the time series
 
-        self.data = data
+        raise "Only numpy arrays, pandas Series, and csv files are supported!"
 
         # Sort the time series data by index
         # If index is None, raise exception
@@ -90,14 +88,23 @@ class TimeSeries:
 
     def plot(self,figsize=(6,8),xlabel=None,ylabel=None,title=None,plot_indicator=False,style=None):
         plt.figure(figsize=figsize)
+        n = len(self.indicators) + 1
         if not plot_indicator:
             plt.plot(self.data)
         else:
-            if style='together':
-                plt.subplot(1,2,1)
-
+            if style=='together':
+                for i in range(n):
+                    plt.plot(self.indicators)
+            else:
+                col  = n // 5
+                row = 5
+                fig,axs = plt.subplots(row,col)
+                for i in range(n):
+                    axs[i].plot(n)
+                    axs.title(self.indicators[i].name)
+                    axs.xlabel(self.indicators[i].name)
+                    plt.subplot(1,2,1)
 
 
     def to_string(self):
         return self.__str__(self)
-
