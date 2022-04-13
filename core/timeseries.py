@@ -5,15 +5,15 @@ import datetime
 
 class TimeSeries:
     def __init__(self,data=None,link=None,nan=None):
+        self.indicators = dict()
         if data is not None:
             self.load_data(data)
         elif link is not None:
             tmp_data = pd.read_csv(link)
             self.load_data(tmp_data)
-        self.indicators = None
 
     def __str__(self):
-        pass
+        return self.data.to_string()
 
     def __dict__(self):
         pass
@@ -31,34 +31,37 @@ class TimeSeries:
                 raise "Can't convert list to string!"
 
         # If the data is an array, default to using array index as time series index
-        if type(data).__module__ == np.__name__:
+        elif type(data).__module__ == np.__name__:
             if data.shape[1] == 1:
                 self.data = pd.Series(data=data,index=list(range(len(data))) + 1)
             elif data.shape[1] == 2:
-                self.data = pd.Series(data=data[1],index=data[1])
+                self.data = pd.Series(data=data[:,1],index=data[:,0])
             return
 
-        if isinstance(data,dict):
+        elif isinstance(data,dict):
             pass
 
-        if isinstance(data,pd.Series):
+        elif isinstance(data,pd.Series):
             self.data = data
             return
 
-
         # If the index of data is string, change the format to datetime
-        if isinstance(data, str):
+        elif isinstance(data,pd.DataFrame):
+            series_data = data.iloc[:,1]
+            self.data = pd.Series(data = series_data,index=data.index)
+            for i in range(1,data.shape[1]):
+                indicator_name = data.columns[i]
+                self.indicators[indicator_name] = data.iloc[:,i]
+            return
+
+        elif isinstance(data, str):
             # Check if data is a filename
             if data[-4:] == ".csv":
-                df  = pd.from_csv(str,sep = delim)
-                df_index = df.index
-                df.data = pd.Series(data = df.iloc[0,:].tolist(),index=df_index)
-                iteritems = df.iteritems()
-                next(iteritems)
-                for (column_name,column_data) in df.iteritems():
-                    self.indicators.append(pd.Series(data=column_data,index=df_index,name=column_name))
+                df = pd.from_csv(str,sep = delim)
+                self.load_data(df)
             if data[-4:] == ".txt":
                 pass
+            return
 
             # Else, data is a string representing the time series
 
@@ -106,5 +109,29 @@ class TimeSeries:
                     plt.subplot(1,2,1)
 
 
-    def to_string(self):
-        return self.__str__(self)
+    def to_string(self,indicators=False):
+        rslt_string = ""
+
+        if isinstance(indicators,bool):
+            if indicators:
+                for name,indicator in self.indicators.items():
+                    rslt_string += (str(self.indicators[name]) + "\n")
+            else:
+                return self.__str__()
+        elif isinstance(indicators,str):
+            return self.indicators[indicators] + "\n"
+        else:
+            for indicator in indicators:
+                if indicator in self.indicators.keys():
+                    rslt_string += str(self.indicators[indicator]) + "\n"
+
+        return rslt_string
+
+                #for name,indicator_data in self.indicators.items():
+    # def exp(self):
+    def plot(self,indicators=False):
+        if indicators:
+            total_indicators = len(indicators)
+            fig,axs = plt.subplots(total_indicators // 2, 2)
+            for idx,key,value in enumerate(indicators):
+                axs[i]
