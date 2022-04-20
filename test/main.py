@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
 from core.timeseries import TimeSeries
-from datetime import datetime,timedelta
-# from core import stock
+import data
+# from data.__random import seasonal
+
+
+# from core2 import stock
 
 def get_random_series(size,method='series'):
     dates = list(pd.date_range(start="4/2/2022", end="4/4/2022", periods=size))
@@ -21,12 +24,16 @@ def get_dataframe(size, method='dataframe'):
     #print(df)
     return df
 
+# def get_seasonal_series():
+
+
 def test_to_string():
     df = get_dataframe(0)
     ts = TimeSeries(df)
     # print(ts.to_string(indicators=False))
     # print(ts.to_string(indicators=True))
     print(ts.to_string(indicators=['PE','income']))
+    data.random
 
 
 if __name__ == "__main__":
@@ -34,5 +41,8 @@ if __name__ == "__main__":
     # print(get_dataframe(3, method='dataframe'))
     # df = get_dataframe(0)
     # ts = TimeSeries(df)
-    test_to_string()
-
+    # test_to_string()
+    # ts = TimeSeries()
+    # print(data.any_func())
+    # data.generate_random(1)
+    data.random.seasonal()

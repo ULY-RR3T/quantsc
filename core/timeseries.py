@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
+import statsmodels as sm
 
 import statsmodels.api as sm
 from scipy import stats
@@ -172,6 +173,7 @@ class TimeSeries:
 
                 #for name,indicator_data in self.indicators.items():
     # def exp(self):
+<<<<<<< HEAD
     """
     def plot_data(self,indicators=False):
         if indicators:
@@ -180,3 +182,18 @@ class TimeSeries:
             for idx,key,value in enumerate(indicators):
                 axs[i]
     """
+=======
+    # def plot(self,indicators=False):
+    #     if indicators:
+    #         total_indicators = len(indicators)
+    #         fig,axs = plt.subplots(total_indicators // 2, 2)
+    #         for idx,key,value in enumerate(indicators):
+    #             axs[i]
+
+
+    def decompose(self,plot = True):
+        rslt = sm.tsa.seasonal.seasonal_decompose(self.data);
+        if plot:
+            rslt.plot()
+        return rslt.trend(),rslt.seasonal()
+>>>>>>> e56d5f5... Added structure

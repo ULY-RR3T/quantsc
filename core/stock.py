@@ -5,7 +5,7 @@ import datetime
 
 import yfinance as yf
 
-import yahoo_fin.stock_info as si
+import yahoo_finance.stock_info as si
 #http://theautomatic.net/yahoo_fin-documentation/
 #http://theautomatic.net/yahoo_fin-documentation/#methods
 

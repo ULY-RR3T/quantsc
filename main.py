@@ -1,9 +1,7 @@
-import pandas as pd
 import numpy as np
 from core import timeseries as ts
-from core import Stock as stock
-from datetime import datetime,timedelta
-# from core import stock
+
+# from core2 import stock
 
 #if __name__ == "__main__":
 #    dates = pd.date_range(start="4/2/2022",end="4/4/2022",periods=3)
