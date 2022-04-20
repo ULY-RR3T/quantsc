@@ -2,3 +2,7 @@ setuptools~=57.0.0
 pandas~=1.4.1
 numpy~=1.22.3
 yfinance
+yahoo_fin
+statsmodels
+scipy
+

@@ -3,6 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 
+import statsmodels.api as sm
+from scipy import stats
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.arima.model import ARIMA
+from pandas import DataFrame
+
 class TimeSeries:
     def __init__(self,data=None,link=None,nan=None):
         self.indicators = dict()
@@ -94,6 +100,7 @@ class TimeSeries:
         n = len(self.indicators) + 1
         if not plot_indicator:
             plt.plot(self.data)
+            plt.show()
         else:
             if style=='together':
                 for i in range(n):
@@ -127,11 +134,49 @@ class TimeSeries:
 
         return rslt_string
 
+
+    def take_diff(self, d):
+        df = pd.DataFrame(self.data.values)
+        for i in range(d):
+            df = df.diff()
+        plt.plot(df)
+        plt.show()
+
+    def take_autocorrelation(self, d):
+        df = pd.DataFrame(self.data.values)
+        for i in range(d):
+            df = df.diff()
+        plot_acf(df.dropna())
+        plt.show()
+
+    def take_partial_autocorrelation(self, d):
+        df = pd.DataFrame(self.data.values)
+        for i in range(d):
+            df = df.diff()
+        plot_pacf(df.dropna())
+        plt.show()
+
+    def model_arima(self, p, d, q, plotResiduals = True, getSummary = True, ):
+        df = pd.DataFrame(self.data.values)
+        model = ARIMA(df, order=(p, d, q))
+        model_fit = model.fit()
+        if getSummary:
+            print(model_fit.summary())
+        residuals = DataFrame(model_fit.resid)
+        if plotResiduals:
+            fig, ax = plt.subplots(1, 2)
+            residuals.plot(title="Residuals", ax=ax[0])
+            residuals.plot(kind='kde', title='Density', ax=ax[1])
+            plt.show()
+        return model
+
                 #for name,indicator_data in self.indicators.items():
     # def exp(self):
-    def plot(self,indicators=False):
+    """
+    def plot_data(self,indicators=False):
         if indicators:
             total_indicators = len(indicators)
             fig,axs = plt.subplots(total_indicators // 2, 2)
             for idx,key,value in enumerate(indicators):
                 axs[i]
+    """
