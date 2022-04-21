@@ -1,5 +1,5 @@
 import numpy as np
-from core import timeseries as ts
+from qsc.core import timeseries as ts
 
 # from core2 import stock
 

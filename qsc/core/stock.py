@@ -1,36 +1,33 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import datetime
 
 import yfinance as yf
 import yahoo_fin.stock_info as si
-import core.timeseries as TimeSeries
 #http://theautomatic.net/yahoo_fin-documentation/
 #http://theautomatic.net/yahoo_fin-documentation/#methods
-from core.timeseries import TimeSeries
+from qsc.core.timeseries import TimeSeries
 
 
 class Stock(TimeSeries):
-    def __init__(self, ticker=None, data=None,date_range=None, freq=None):
-
-    if data:
-            TimeSeries.__init__(data=data)
-        else:
-            # Use yfinance to fetch data
-            TimeSeries.__init__(ticker=ticker,date_range=date_range,freq=freq)
+    def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None):
+        if data:
             self.ticker = ticker
-            if freq is not None:
-                self.period = self.is_valid_period(freq)
+        else:
+            if interval is not None:
+                self.interval = self.is_valid_interval(interval)
+            self.ticker = ticker
+            super().__init__(data=ticker,start=start,end=end,interval=interval)
+        self.indicators = dict()
+
 
     def getIndicators(self):
         return self.indicators
 
-    def is_valid_period(self, period):
+    def is_valid_interval(self, period):
         valid_period = ['1d','5d','1mo','3mo','6mo','1y','2y','5y','10y','ytd','max']
         if period in valid_period:
             return period
         else:
+            raise("Interval must be one of '1d','5d','1mo','3mo','6mo','1y','2y','5y','10y','ytd','max'!")
             return None
 
     def update_data(self, ticker, period = None):

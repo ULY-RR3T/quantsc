@@ -12,12 +12,21 @@ from pandas import DataFrame
 import yfinance as yf
 
 class TimeSeries:
-    def __init__(self, data=None, start=None, end=None, interval=None, delim=',',nan=None):
+    def __init__(self, data=None, start=None, end=None, interval='1d', delim=',',type='Open',nan=None):
+        """
+
+        :param data: numpy nd-array, pandas series, .csv .txt,ticker
+        :param start:
+        :param end:
+        :param interval:
+        :param delim:
+        :param nan:
+        """
         self.indicators = dict()
         self.data = None
         if isinstance(data,str):
             if not('.csv' in data or '.txt' in data):
-                self.data = yf.download(data, start=start, end=end, interval=interval)
+                self.data = np.round(yf.download(data, start=start, end=end, interval=interval)[type],2)
             else:
                 self.load_data(data,delim=delim)
 
@@ -83,23 +92,28 @@ class TimeSeries:
         # Sort the time series data by index
         # If index is None, raise exception
     @staticmethod
-    def check_integrity(self, data=None):
+    def check_integrity(self, series=None):
         """Checks if the given data is a valid time series, raise exception if data is not a valid time series
 
-        :param data:
+        :param series:
         :return:
         """
-        if data is None:
-            data = self.data
-        if not isinstance(data,pd.core.series.Series):
+        data = series.data
+
+
+
+
+        if not isinstance(data, pd.core.series.Series):
             raise "Time series data must be pd.Series!"
 
         ## Checks if all the indicies are in chronological order
-        if not all(data.index[i] <= data.index[i+1] for i in range(len(data.index) - 1)):
+        if not all(data.index[i] <= data.index[i + 1] for i in range(len(data.index) - 1)):
             raise "Time series are not in chronological order!"
 
-        if not isinstance(self.data.index,datetime.date):
+        if not isinstance(self.data.index,pd.DatetimeIndex):
             raise "Index of the series must be datetime!"
+
+        print("TimeSeries Successfully Validated")
 
 
     def plot(self,figsize=(6,8),xlabel=None,ylabel=None,title=None,plot_indicator=False,style=None):

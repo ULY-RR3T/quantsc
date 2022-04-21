@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
-from core.timeseries import TimeSeries
-import data
+from qsc.core import TimeSeries
+from qsc import data
+
+
 # from data.__random import seasonal
 
 

@@ -1,4 +1,4 @@
-from core.timeseries import TimeSeries
+from qsc.core import TimeSeries
 import numpy as np
 import pandas as pd
 

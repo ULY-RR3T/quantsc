@@ -1,16 +1,34 @@
-from core.stock import Stock
-def testAdd():
-    a = Stock("AAPL")
-    b = Stock("GE")
-    a.plot()
-    b.plot()
-    (a + b).plot()
+import qsc
 
-def testSub():
-    pass
+class TestStockLoad():
+    def testLoadStockFromTickerNoInterval(self,ticker="AAPL"):
+        print("b-------------testLoadStockFromTickerNoInterval")
+        stock = qsc.Stock(ticker)
+        print(stock)
+        print("e-------------testLoadStockFromTickerNoInterval")
 
-def testMul():
-    pass
+
+class TestStockOperations():
+    def testAdd(self):
+        a = qsc.Stock("AAPL")
+        b = qsc.Stock("GE")
+        a.plot()
+        b.plot()
+        (a + b).plot()
+
+
+    # def testAdd(self):
+    #     a = Stock("AAPL").get_data()
+    #     b = Stock("GE").get_data()
+    #     c = a + b
+    #     c.plot()
+
+    def testSub(self):
+        pass
+
+    def testMul(self):
+        pass
 
 if __name__ == "__main__":
-    testAdd()
+    load_test = TestStockLoad()
+    load_test.testLoadStockFromTickerNoInterval("GE")

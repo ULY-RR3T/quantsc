@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 # When importing a submodule in the same folder, use this to help
 # python know we are importing a submodule instead of a file. Since
 # the default behavior looks for __random.py
-import __random as __random
-
+# import __random as __random
+import qsc.data.__random as __random
 
 def __get_date():
     # np.__random.__random

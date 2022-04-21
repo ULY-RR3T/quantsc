@@ -1,11 +1,5 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import datetime
-from core import timeseries
-from core import stock
-from core.stock import Stock
-from core.timeseries import TimeSeries
+from qsc.core import Stock
+
 
 def generate_stationary():
     apple_stock = Stock("AAPL")

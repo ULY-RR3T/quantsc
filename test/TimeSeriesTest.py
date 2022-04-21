@@ -1,36 +1,39 @@
-from core.timeseries import TimeSeries
+import qsc
 import testutil as util
-import pandas as pd
-from core.stock import Stock
-import os
+import qsc
+
+
+# from core.stock import Stock
 class TimeSeriesTest():
 
+    # def testLoadLibrary(self):
+    #     assert(isinstance(qsc.TimeSeries()))
+
     def testEmptyInitialize(self):
-        ts = TimeSeries()
+        ts = qsc.TimeSeries()
         print(ts)
 
     def testLoadSeriesNoIndicatorSeries(self):
         pd_series = util.get_random_pandas_series(size=3)
-        ts = TimeSeries(pd_series)
+        ts = qsc.TimeSeries(pd_series)
         print(ts)
 
     def testLoadSeriesNoIndicatorNumpy(self):
         np_ndarray = util.get_random_numpy_ndarray(size=3)
-        ts = TimeSeries(np_ndarray)
+        ts = qsc.TimeSeries(np_ndarray)
         print(ts)
 
     def testLoadSeriesFromCSV(self,file=None):
         if file is None:
             file = "static/test_data.csv"
         # print(pd.read_csv(file,header=None,index_col=0))
-        ts = TimeSeries(data=file)
+        ts = qsc.TimeSeries(data=file)
         print(ts)
 
-    def testAdd(self):
-        a = Stock("AAPL").get_data()
-        b = Stock("GE").get_data()
-        c = a + b
-        c.plot()
+    def testLoadSeriesFromTiker(self,ticker):
+        ts = qsc.TimeSeries(ticker)
+        print(ts)
+        qsc.TimeSeries.check_integrity(ts)
 
 
 if __name__ == "__main__":
@@ -39,3 +42,4 @@ if __name__ == "__main__":
     # test.testInitialize()
     # test.testLoadSeriesNoIndicator()
     # test.testLoadSeriesNoIndicatorNumpy()
+    # test.testLoadSeriesFromTiker("GE")
