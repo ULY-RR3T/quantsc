@@ -1,24 +1,9 @@
 import pandas as pd
+from core.timeseries import TimeSeries
+from core.stock import Stock
 
-def read_stock(filename: str, columnNames = [], fileType = "csv"):
-    stocks = {}
-    if (fileType == "csv"):
-        stocks = pd.read_csv(filename)
-    elif (fileType == "excel"):
-        stocks = pd.read_excel(filename)
+def autocovariance(TimeSeries a, lag = 0):
+    pass
 
-    if not stocks:
-        print("Failed to read " + filename)
-        return
-
-    stockList = []
-
-    if columnNames:
-        # reorder to match the correct columnNames
-        # reset stocks[i] = corrected version of columnNames
-
-    for i in dictOfStocks:
-        s = Stock(dictOfStocks[i])
-        stockList.append(s)
-
-    return stockList
+def covariance(TimeSeries a, TimeSeries b, lag = 0):
+    pass

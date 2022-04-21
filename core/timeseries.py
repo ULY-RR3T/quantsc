@@ -143,7 +143,6 @@ class TimeSeries:
 
         return rslt_string
 
-
     def take_diff(self, d):
         df = pd.DataFrame(self.data.values)
         for i in range(d):
@@ -179,30 +178,30 @@ class TimeSeries:
             plt.show()
         return model
 
+        """
+         Have not tested __add__, __sub__, __mul__
+         Potential Issues: Stock add, sub, and mul might not inherit properly
+         """
 
-    # """
-    # Have not tested __add__, __sub__, __mul__
-    # Potential Issues: Stock add, sub, and mul might not inherit properly
-    # """
-    # def __add__(self, other):
-    #     if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
-    #         newData = (self.data + other.data).dropna()
-    #         retVal = TimeSeries(newData)
-    #         return retVal
-    #
-    # def __sub__(self, other):
-    #     if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
-    #         newData = (self.data - other.data).dropna()
-    #         retVal = TimeSeries(newData)
-    #         return retVal
-    #
-    # def __mul__(self, other):
-    #     if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
-    #         newData = (self.data * other.data).dropna()
-    #         retVal = TimeSeries(newData)
-    #         return retVal
+        def __add__(self, other):
+            if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+                newData = (self.data + other.data).dropna()
+                retVal = TimeSeries(newData)
+                return retVal
 
-    #for name,indicator_data in self.indicators.items():
+        def __sub__(self, other):
+            if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+                newData = (self.data - other.data).dropna()
+                retVal = TimeSeries(newData)
+                return retVal
+
+        def __mul__(self, other):
+            if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+                newData = (self.data * other.data).dropna()
+                retVal = TimeSeries(newData)
+                return retVal
+
+                #for name,indicator_data in self.indicators.items():
     # def exp(self):
 
     """
@@ -219,5 +218,3 @@ class TimeSeries:
     #         fig,axs = plt.subplots(total_indicators // 2, 2)
     #         for idx,key,value in enumerate(indicators):
     #             axs[i]
-
-
