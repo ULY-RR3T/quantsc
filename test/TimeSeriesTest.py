@@ -1,6 +1,7 @@
 from core.timeseries import TimeSeries
 import testutil as util
 import pandas as pd
+from core.stock import Stock
 import os
 class TimeSeriesTest():
 
@@ -24,6 +25,12 @@ class TimeSeriesTest():
         # print(pd.read_csv(file,header=None,index_col=0))
         ts = TimeSeries(data=file)
         print(ts)
+
+    def testAdd(self):
+        a = Stock("AAPL").get_data()
+        b = Stock("GE").get_data()
+        c = a + b
+        c.plot()
 
 
 if __name__ == "__main__":

@@ -8,6 +8,8 @@ import yahoo_fin.stock_info as si
 import core.timeseries as TimeSeries
 #http://theautomatic.net/yahoo_fin-documentation/
 #http://theautomatic.net/yahoo_fin-documentation/#methods
+from core.timeseries import TimeSeries
+
 
 class Stock(TimeSeries):
     def __init__(self, ticker=None, data=None,date_range=None, freq=None):
@@ -86,5 +88,20 @@ class Stock(TimeSeries):
     def dividends(self): # can have specified date for onwards
         return si.get_dividends(self.ticker)
 
+    def __add__(self, other):
+        if isinstance(other, Stock):
+            return self.data + other.data
+        elif isinstance(other, TimeSeries):
+            return self.data + other
 
+    def __sub__(self, other):
+        if isinstance(other, Stock):
+            return self.data - other.data
+        elif isinstance(other, TimeSeries):
+            return self.data - other
 
+    def __mul__(self, other):
+        if isinstance(other, Stock):
+            return self.data * other.data
+        elif isinstance(other, TimeSeries):
+            return self.data * other
