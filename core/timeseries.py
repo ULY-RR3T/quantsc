@@ -178,28 +178,29 @@ class TimeSeries:
             plt.show()
         return model
 
-        """
-         Have not tested __add__, __sub__, __mul__
-         Potential Issues: Stock add, sub, and mul might not inherit properly
-         """
-
         def __add__(self, other):
-            if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+            if isinstance(other, TimeSeries):
                 newData = (self.data + other.data).dropna()
                 retVal = TimeSeries(newData)
                 return retVal
+            else:
+                raise Exception("Second object in addition is not an instance of TimeSeries.")
 
         def __sub__(self, other):
-            if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+            if isinstance(other, TimeSeries):
                 newData = (self.data - other.data).dropna()
                 retVal = TimeSeries(newData)
                 return retVal
+            else:
+                raise Exception("Second object in subtraction is not an instance of TimeSeries.")
 
         def __mul__(self, other):
-            if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+            if isinstance(other, TimeSeries):
                 newData = (self.data * other.data).dropna()
                 retVal = TimeSeries(newData)
                 return retVal
+            else:
+                raise Exception("Second object in multiplication is not an instance of TimeSeries.")
 
                 #for name,indicator_data in self.indicators.items():
     # def exp(self):

@@ -93,15 +93,21 @@ class Stock(TimeSeries):
             return self.data + other.data
         elif isinstance(other, TimeSeries):
             return self.data + other
+        else:
+            raise Exception("Second object in addition is not an instance of TimeSeries or Stock.")
 
     def __sub__(self, other):
         if isinstance(other, Stock):
             return self.data - other.data
         elif isinstance(other, TimeSeries):
             return self.data - other
+        else:
+            raise Exception("Second object in subtraction is not an instance of TimeSeries or Stock.")
 
     def __mul__(self, other):
         if isinstance(other, Stock):
             return self.data * other.data
         elif isinstance(other, TimeSeries):
             return self.data * other
+        else:
+            raise Exception("Second object in multiplication is not an instance of TimeSeries or Stock.")
