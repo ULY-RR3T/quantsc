@@ -2,7 +2,7 @@ from core.timeseries import TimeSeries
 import testutil as util
 import pandas as pd
 import os
-class testTimeSeries():
+class TimeSeriesTest():
 
     def testEmptyInitialize(self):
         ts = TimeSeries()
@@ -27,8 +27,8 @@ class testTimeSeries():
 
 
 if __name__ == "__main__":
-    test = testTimeSeries()
-    test.testLoadSeriesFromCSV()
+    test = TimeSeriesTest()
+    # test.testLoadSeriesFromCSV()
     # test.testInitialize()
     # test.testLoadSeriesNoIndicator()
     # test.testLoadSeriesNoIndicatorNumpy()

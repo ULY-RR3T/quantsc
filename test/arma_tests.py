@@ -7,8 +7,6 @@ from core import stock
 from core.stock import Stock
 from core.timeseries import TimeSeries
 
-
-
 def generate_stationary():
     apple_stock = Stock("AAPL")
     #print(apple_stock.get_data())
