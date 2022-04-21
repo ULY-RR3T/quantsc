@@ -9,18 +9,23 @@ from scipy import stats
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.arima.model import ARIMA
 from pandas import DataFrame
+import yfinance as yf
 
 class TimeSeries:
-    def __init__(self,data=None,link=None,nan=None):
+    def __init__(self, data=None, start=None, end=None, interval=None, delim=',',nan=None):
         self.indicators = dict()
-        if data is not None:
-            self.load_data(data)
-        elif link is not None:
-            tmp_data = pd.read_csv(link)
-            self.load_data(tmp_data)
+        self.data = None
+        if isinstance(data,str):
+            if not('.csv' in data or '.txt' in data):
+                self.data = yf.download(data, start=start, end=end, interval=interval)
+            else:
+                self.load_data(data,delim=delim)
 
     def __str__(self):
-        return self.data.to_string()
+        if self.data is None:
+            return ""
+        else:
+            return self.data.to_string()
 
     def __dict__(self):
         pass
@@ -54,7 +59,7 @@ class TimeSeries:
 
         # If the index of data is string, change the format to datetime
         elif isinstance(data,pd.DataFrame):
-            series_data = data.iloc[:,1]
+            series_data = data.iloc[:,0]
             self.data = pd.Series(data = series_data,index=data.index)
             for i in range(1,data.shape[1]):
                 indicator_name = data.columns[i]
@@ -63,10 +68,11 @@ class TimeSeries:
 
         elif isinstance(data, str):
             # Check if data is a filename
-            if data[-4:] == ".csv":
-                df = pd.from_csv(str,sep = delim)
+            if ".csv" in data:
+                df = pd.read_csv(data,sep = delim,header=None,index_col=0)
+                df.columns.name = None
                 self.load_data(df)
-            if data[-4:] == ".txt":
+            elif ".txt" in data:
                 pass
             return
 
@@ -76,7 +82,7 @@ class TimeSeries:
 
         # Sort the time series data by index
         # If index is None, raise exception
-
+    @staticmethod
     def check_integrity(self, data=None):
         """Checks if the given data is a valid time series, raise exception if data is not a valid time series
 
@@ -119,6 +125,8 @@ class TimeSeries:
 
     def to_string(self,indicators=False):
         rslt_string = ""
+        if self.data is not None:
+           rslt_string += self.data.to_string()
 
         if isinstance(indicators,bool):
             if indicators:
@@ -171,9 +179,32 @@ class TimeSeries:
             plt.show()
         return model
 
-                #for name,indicator_data in self.indicators.items():
+
+    # """
+    # Have not tested __add__, __sub__, __mul__
+    # Potential Issues: Stock add, sub, and mul might not inherit properly
+    # """
+    # def __add__(self, other):
+    #     if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+    #         newData = (self.data + other.data).dropna()
+    #         retVal = TimeSeries(newData)
+    #         return retVal
+    #
+    # def __sub__(self, other):
+    #     if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+    #         newData = (self.data - other.data).dropna()
+    #         retVal = TimeSeries(newData)
+    #         return retVal
+    #
+    # def __mul__(self, other):
+    #     if not isinstance(self.data, np.array) and isinstance(other, TimeSeries):
+    #         newData = (self.data * other.data).dropna()
+    #         retVal = TimeSeries(newData)
+    #         return retVal
+
+    #for name,indicator_data in self.indicators.items():
     # def exp(self):
-<<<<<<< HEAD
+
     """
     def plot_data(self,indicators=False):
         if indicators:
@@ -182,7 +213,6 @@ class TimeSeries:
             for idx,key,value in enumerate(indicators):
                 axs[i]
     """
-=======
     # def plot(self,indicators=False):
     #     if indicators:
     #         total_indicators = len(indicators)
@@ -191,9 +221,3 @@ class TimeSeries:
     #             axs[i]
 
 
-    def decompose(self,plot = True):
-        rslt = sm.tsa.seasonal.seasonal_decompose(self.data);
-        if plot:
-            rslt.plot()
-        return rslt.trend(),rslt.seasonal()
->>>>>>> e56d5f5... Added structure

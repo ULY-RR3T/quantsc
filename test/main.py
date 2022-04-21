@@ -45,4 +45,9 @@ if __name__ == "__main__":
     # ts = TimeSeries()
     # print(data.any_func())
     # data.generate_random(1)
-    data.random.seasonal()
+    # data.random.seasonal()
+
+   #---------------Test 1: Initialization---------#
+
+    ts = TimeSeries()
+    print(ts)

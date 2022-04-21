@@ -3,9 +3,9 @@ import pandas as pd
 def read_stock(filename: str, columnNames = [], fileType = "csv"):
     stocks = {}
     if (fileType == "csv"):
-        stocks = pandas.read_csv(filename)
+        stocks = pd.read_csv(filename)
     elif (fileType == "excel"):
-        stocks = pandas.read_excel(filename)
+        stocks = pd.read_excel(filename)
 
     if not stocks:
         print("Failed to read " + filename)

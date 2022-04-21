@@ -4,21 +4,22 @@ import matplotlib.pyplot as plt
 import datetime
 
 import yfinance as yf
-
-import yahoo_finance.stock_info as si
+import yahoo_fin.stock_info as si
+import core.timeseries as TimeSeries
 #http://theautomatic.net/yahoo_fin-documentation/
 #http://theautomatic.net/yahoo_fin-documentation/#methods
 
-class Stock:
-    def __init__(self, ticker, data=None, period=None):
-        self.ticker = ticker
-        if period is not None:
-            self.period = self.is_valid_period(period)
-        if data is not None:
-            self.data = data
-        elif data is None:
-            self.data = yf.download(ticker, period)
-        self.indicators = dict()
+class Stock(TimeSeries):
+    def __init__(self, ticker=None, data=None,date_range=None, freq=None):
+
+    if data:
+            TimeSeries.__init__(data=data)
+        else:
+            # Use yfinance to fetch data
+            TimeSeries.__init__(ticker=ticker,date_range=date_range,freq=freq)
+            self.ticker = ticker
+            if freq is not None:
+                self.period = self.is_valid_period(freq)
 
     def getIndicators(self):
         return self.indicators
@@ -32,6 +33,7 @@ class Stock:
 
     def update_data(self, ticker, period = None):
         self.data = yf.download(ticker, period)
+        self.indicators = dict()
 
     def get_data(self):
         return self.data
@@ -39,14 +41,32 @@ class Stock:
     def get_csv(self):
         return self.data.to_csv(self.ticker+'.csv')
 
-    def get_earnings(self, ticker): #, earnings_date: datetime):
-        #get earning_history (no specified date)
+    def get_earnings(self, ticker=None):  # , earnings_date: datetime):
+        earning_data = si.get_earnings_history(self.ticker)
+        df_eps = pd.DataFrame.from_dict(earning_data)
+        eps_data = pd.DataFrame(df_eps["epsactual"])
+        eps_data.index = df_eps["startdatetime"]
+        self.indicators["earning"] = eps_data
+        return self.indicators["earning"]
 
-        stock_earning_history = si.get_earnings_history(self.ticker)
-        self.indicators["earnings"] = stock_earning_history
-        return self.indicators["earnings"]
-        #frame = pd.DataFrame.from_dict(stock_earning_history)
-        #return frame.plot(x="startdatetime", y="espactual")
+    def get_epsestimate(self):
+        earning_data = si.get_earnings_history(self.ticker)
+        df_eps = pd.DataFrame.from_dict(earning_data)
+        eps_data = df_eps["epsestimate"]
+        eps_data.index = df_eps["startdatetime"]
+        self.indicators["epsestimate"] = eps_data
+        return self.indicators["epsestimate"]
+
+    def get_epsactual(self):
+        return self.get_earnings()
+
+    def get_epssurprisepct(self):
+        earning_data = si.get_earnings_history(self.ticker)
+        df_eps = pd.DataFrame.from_dict(earning_data)
+        eps_data = df_eps["epssurprisepct"]
+        eps_data.index = df_eps["startdatetime"]
+        self.indicators["epssurprisepct"] = eps_data
+        return self.indicators["epssurprisepct"]
 
     def balance_sheet(self, yearly = True):
         self.indicators["balance_sheet"] = si.get_balance_sheet(self.ticker, yearly)
