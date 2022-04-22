@@ -5,6 +5,11 @@ import yahoo_fin.stock_info as si
 #http://theautomatic.net/yahoo_fin-documentation/
 #http://theautomatic.net/yahoo_fin-documentation/#methods
 from qsc.core.timeseries import TimeSeries
+import plotly.graph_objects as go
+import plotly.express as px
+import matplotlib.pyplot as plt
+import qsc.config as config
+
 
 
 class Stock(TimeSeries):
@@ -15,7 +20,14 @@ class Stock(TimeSeries):
             if interval is not None:
                 self.interval = self.is_valid_interval(interval)
             self.ticker = ticker
-            super().__init__(data=ticker,start=start,end=end,interval=interval)
+            stock_data = yf.download(ticker,start=start,end=end,interval=interval)
+            series = pd.Series(data=stock_data['Open'],index=stock_data.index)
+            super().__init__(series)
+            self.open = stock_data['Open']
+            self.close = stock_data['Close']
+            self.low = stock_data['Low']
+            self.high = stock_data['High']
+            self.dates = stock_data.index
         self.indicators = dict()
 
 
@@ -108,3 +120,26 @@ class Stock(TimeSeries):
             return self.data * other
         else:
             raise Exception("Second object in multiplication is not an instance of TimeSeries or Stock.")
+
+    def plot(self,backend=None,type='candle'):
+        if backend is None:
+            backend = config.config['plot_backend']
+        if backend == "matplotlib":
+            plt.plot(self.data)
+            plt.show()
+        elif backend == "plotly":
+            if type == "candle":
+                fig = go.Figure(data=[go.Candlestick(x=self.dates,
+                        open=self.open,
+                        high=self.high,
+                        low=self.low,
+                        close=self.close)])
+            elif type == "line":
+                fig = px.line(self.data)
+            else:
+                raise("type can only be 'candle' or 'line'")
+            fig.show()
+        else:
+            raise("Backend must be either 'plotly' or 'matplotlib!'")
+
+

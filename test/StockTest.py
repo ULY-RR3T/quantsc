@@ -8,6 +8,7 @@ class TestStockLoad():
         print("e-------------testLoadStockFromTickerNoInterval")
 
 
+
 class TestStockOperations():
     def testAdd(self):
         a = qsc.Stock("AAPL")
@@ -30,5 +31,7 @@ class TestStockOperations():
         pass
 
 if __name__ == "__main__":
-    load_test = TestStockLoad()
-    load_test.testLoadStockFromTickerNoInterval("GE")
+    # load_test = TestStockLoad()
+    # load_test.testLoadStockFromTickerNoInterval("GE")
+    # qsc.Stock("AAPL").plot()
+    qsc.Stock("GE",interval='1d').plot()

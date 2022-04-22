@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import plotly.express as px
 import matplotlib.pyplot as plt
 import datetime
 import statsmodels as sm
@@ -10,6 +11,7 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.arima.model import ARIMA
 from pandas import DataFrame
 import yfinance as yf
+import plotly.express as px
 
 class TimeSeries:
     def __init__(self, data=None, start=None, end=None, interval='1d', delim=',',type='Open',nan=None):
@@ -26,9 +28,9 @@ class TimeSeries:
         self.data = None
         if isinstance(data,str):
             if not('.csv' in data or '.txt' in data):
-                self.data = np.round(yf.download(data, start=start, end=end, interval=interval)[type],2)
-            else:
-                self.load_data(data,delim=delim)
+                self.data = np.round(yf.download(data, start=start, end=end, interval=interval)[type],1)
+        else:
+            self.load_data(data,delim=delim)
 
     def __str__(self):
         if self.data is None:
@@ -120,7 +122,7 @@ class TimeSeries:
         plt.figure(figsize=figsize)
         n = len(self.indicators) + 1
         if not plot_indicator:
-            plt.plot(self.data)
+            px.plot(self.data)
             plt.show()
         else:
             if style=='together':
