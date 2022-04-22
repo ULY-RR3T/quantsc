@@ -1,6 +1,5 @@
-import qsc
 import testutil as util
-import qsc
+import quantsc as qsc
 
 
 # from core.stock import Stock

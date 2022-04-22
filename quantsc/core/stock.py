@@ -1,18 +1,16 @@
 import pandas as pd
-
 import yfinance as yf
 import yahoo_fin.stock_info as si
 #http://theautomatic.net/yahoo_fin-documentation/
 #http://theautomatic.net/yahoo_fin-documentation/#methods
-from qsc.core.timeseries import TimeSeries
 import plotly.graph_objects as go
 import plotly.express as px
 import matplotlib.pyplot as plt
-import qsc.config as config
+import quantsc.config as config
+import quantsc as qsc
 
 
-
-class Stock(TimeSeries):
+class Stock(qsc.TimeSeries):
     def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None):
         if data:
             self.ticker = ticker
@@ -100,7 +98,7 @@ class Stock(TimeSeries):
     def __add__(self, other):
         if isinstance(other, Stock):
             return self.data + other.data
-        elif isinstance(other, TimeSeries):
+        elif isinstance(other, qsc.TimeSeries):
             return self.data + other
         else:
             raise Exception("Second object in addition is not an instance of TimeSeries or Stock.")
@@ -108,7 +106,7 @@ class Stock(TimeSeries):
     def __sub__(self, other):
         if isinstance(other, Stock):
             return self.data - other.data
-        elif isinstance(other, TimeSeries):
+        elif isinstance(other, qsc.TimeSeries):
             return self.data - other
         else:
             raise Exception("Second object in subtraction is not an instance of TimeSeries or Stock.")
@@ -116,7 +114,7 @@ class Stock(TimeSeries):
     def __mul__(self, other):
         if isinstance(other, Stock):
             return self.data * other.data
-        elif isinstance(other, TimeSeries):
+        elif isinstance(other, qsc.TimeSeries):
             return self.data * other
         else:
             raise Exception("Second object in multiplication is not an instance of TimeSeries or Stock.")

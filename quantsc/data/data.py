@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 # python know we are importing a submodule instead of a file. Since
 # the default behavior looks for __random.py
 # import __random as __random
-import qsc.data.__random as __random
+import quantsc.data.__random as __random
 
 def __get_date():
     # np.__random.__random

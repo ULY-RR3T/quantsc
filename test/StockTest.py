@@ -1,4 +1,4 @@
-import qsc
+import quantsc as qsc
 
 class TestStockLoad():
     def testLoadStockFromTickerNoInterval(self,ticker="AAPL"):
@@ -7,7 +7,9 @@ class TestStockLoad():
         print(stock)
         print("e-------------testLoadStockFromTickerNoInterval")
 
+    def testChangeBackend(self):
 
+        qsc.change_plot_backend('plotly')
 
 class TestStockOperations():
     def testAdd(self):
