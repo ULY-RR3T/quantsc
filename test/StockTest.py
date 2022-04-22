@@ -7,17 +7,23 @@ class TestStockLoad():
         print(stock)
         print("e-------------testLoadStockFromTickerNoInterval")
 
-    def testChangeBackend(self):
 
-        qsc.change_plot_backend('plotly')
 
 class TestStockOperations():
+
+    def testChangeBackend(self):
+        s = qsc.Stock("AAPL")
+        s.plot()
+        qsc.change_plot_backend('plotly')
+        s.plot()
+
     def testAdd(self):
-        a = qsc.Stock("AAPL")
-        b = qsc.Stock("GE")
-        a.plot()
-        b.plot()
-        (a + b).plot()
+        apple = qsc.Stock("AAPL")
+        blackberry = qsc.Stock("BB")
+        appberry = apple + blackberry
+        print(appberry.data)
+        type(appberry)
+        appberry.plot(backend='matplotlib')
 
 
     # def testAdd(self):
@@ -36,4 +42,7 @@ if __name__ == "__main__":
     # load_test = TestStockLoad()
     # load_test.testLoadStockFromTickerNoInterval("GE")
     # qsc.Stock("AAPL").plot()
-    qsc.Stock("GE",interval='1d').plot()
+    operations_test = TestStockOperations()
+    # operations_test.testChangeBackend()
+    operations_test.testAdd()
+    # appberry.plot(backend='matplotlib')

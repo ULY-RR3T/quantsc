@@ -7,10 +7,9 @@ import plotly.graph_objects as go
 import plotly.express as px
 import matplotlib.pyplot as plt
 import quantsc.config as config
-import quantsc as qsc
+from quantsc.core.timeseries import TimeSeries
 
-
-class Stock(qsc.TimeSeries):
+class Stock(TimeSeries):
     def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None):
         if data:
             self.ticker = ticker
@@ -98,7 +97,7 @@ class Stock(qsc.TimeSeries):
     def __add__(self, other):
         if isinstance(other, Stock):
             return self.data + other.data
-        elif isinstance(other, qsc.TimeSeries):
+        elif isinstance(other, TimeSeries):
             return self.data + other
         else:
             raise Exception("Second object in addition is not an instance of TimeSeries or Stock.")
@@ -106,7 +105,7 @@ class Stock(qsc.TimeSeries):
     def __sub__(self, other):
         if isinstance(other, Stock):
             return self.data - other.data
-        elif isinstance(other, qsc.TimeSeries):
+        elif isinstance(other, TimeSeries):
             return self.data - other
         else:
             raise Exception("Second object in subtraction is not an instance of TimeSeries or Stock.")
