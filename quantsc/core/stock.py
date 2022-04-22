@@ -113,7 +113,7 @@ class Stock(TimeSeries):
     def __mul__(self, other):
         if isinstance(other, Stock):
             return self.data * other.data
-        elif isinstance(other, qsc.TimeSeries):
+        elif isinstance(other, TimeSeries):
             return self.data * other
         else:
             raise Exception("Second object in multiplication is not an instance of TimeSeries or Stock.")
