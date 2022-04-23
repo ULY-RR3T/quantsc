@@ -102,9 +102,6 @@ class TimeSeries:
         """
         data = series.data
 
-
-
-
         if not isinstance(data, pd.core.series.Series):
             raise "Time series data must be pd.Series!"
 
@@ -118,7 +115,16 @@ class TimeSeries:
         print("TimeSeries Successfully Validated")
 
 
-    def plot(self,figsize=(6,8),xlabel=None,ylabel=None,title=None,plot_indicator=False,style=None):
+    def plot(self,figsize=(6,8),ylabel=None,title=None,plot_indicator=False,style=None):
+        """Plots the TimeSeries
+
+        :param figsize: tuple
+        :param ylabel: str
+        :param title: str
+        :param plot_indicator:
+        :param style:
+        :return:
+        """
         plt.figure(figsize=figsize)
         n = len(self.indicators) + 1
         if not plot_indicator:
@@ -140,6 +146,11 @@ class TimeSeries:
 
 
     def to_string(self,indicators=False):
+        """Converts the TimeSeries to a string, includes indicators if specified
+
+        :param indicators: boolean, str, or list
+        :return: str
+        """
         rslt_string = ""
         if self.data is not None:
            rslt_string += self.data.to_string()
@@ -160,6 +171,11 @@ class TimeSeries:
         return rslt_string
 
     def take_diff(self, d):
+        """Takes a diff of the data d times
+
+        :param d: int
+        :return:
+        """
         df = pd.DataFrame(self.data.values)
         for i in range(d):
             df = df.diff()
@@ -194,32 +210,95 @@ class TimeSeries:
             plt.show()
         return model
 
-        def __add__(self, other):
-            if isinstance(other, TimeSeries):
-                newData = (self.data + other.data).dropna()
-                retVal = TimeSeries(newData)
-                return retVal
-            else:
-                raise Exception("Second object in addition is not an instance of TimeSeries.")
+    def __add__(self, other):
+        if isinstance(other, TimeSeries):
+            newData = (self.data + other.data).dropna()
+            retVal = TimeSeries(newData)
+            return retVal
+        else:
+            raise Exception("Second object in addition is not an instance of TimeSeries.")
 
-        def __sub__(self, other):
-            if isinstance(other, TimeSeries):
-                newData = (self.data - other.data).dropna()
-                retVal = TimeSeries(newData)
-                return retVal
-            else:
-                raise Exception("Second object in subtraction is not an instance of TimeSeries.")
+    def __sub__(self, other):
+        if isinstance(other, TimeSeries):
+            newData = (self.data - other.data).dropna()
+            retVal = TimeSeries(newData)
+            return retVal
+        else:
+            raise Exception("Second object in subtraction is not an instance of TimeSeries.")
 
-        def __mul__(self, other):
-            if isinstance(other, TimeSeries):
-                newData = (self.data * other.data).dropna()
-                retVal = TimeSeries(newData)
-                return retVal
-            else:
-                raise Exception("Second object in multiplication is not an instance of TimeSeries.")
+    def __mul__(self, other):
+        if isinstance(other, TimeSeries):
+            newData = (self.data * other.data).dropna()
+            retVal = TimeSeries(newData)
+            return retVal
+        else:
+            raise Exception("Second object in multiplication is not an instance of TimeSeries.")
 
-                #for name,indicator_data in self.indicators.items():
+            #for name,indicator_data in self.indicators.items():
     # def exp(self):
+
+    def diff(self,shift=1,inplace=False):
+        """
+
+        :param shift:
+        :param inplace:
+        :return:
+        """
+        if inplace:
+            self.data = self.data.diff(shift)
+        else:
+            return TimeSeries(self.data.diff(shift))
+
+
+    def sort_values(self, ascending = True, inplace=False):
+        if inplace:
+            self.data = self.data.sort_values(ascending=ascending)
+        else:
+            sorted = self.data.sort_values(ascending=ascending)
+            return TimeSeries(sorted)
+
+    def sort_index(self, ascending = True, inplace=False):
+        if inplace:
+            self.data = self.data.sort_index(ascending=ascending)
+        else:
+            sorted = self.data.sort_index(ascending=ascending)
+            return TimeSeries(sorted)
+
+    def __len__(self):
+        return self.data.size
+
+    def pairwise_sort(self, other, ascending = True, inplace=False, plot=True):
+        if not isinstance(other, TimeSeries):
+            raise("Pairwise sort only operates on two TimeSeries!")
+        if other.data.size != self.data.size:
+            raise("Length of two TimeSeries has to be the same!")
+        new_index = [self_index for self_data,self_index,other_index,self_index
+                     in sorted(zip(other.data,self.data,other.data.index,self.data.index))]
+        new_data = self.data[new_index]
+        # new_data =[self.data[self_index] for other_index,self_index
+        #              in sorted(zip(other.data.index,self.data.index))]
+        new_series = pd.Series(data=new_data,index=new_index)
+        if inplace:
+            self.data = new_series
+        else:
+            return TimeSeries(new_series)
+
+    def auto_covariance(self, lag=1, plot=False ):
+        return self.data.autocorr(lag=lag)
+
+    def mean(self):
+        return self.data.mean()
+
+    def variance(self):
+        return self.data.var()
+
+
+
+    def covariance_matrix(self, other):
+        pass
+
+        #covar = self.data.cov(self, i)
+
 
     """
     def plot_data(self,indicators=False):

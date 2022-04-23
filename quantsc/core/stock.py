@@ -10,13 +10,18 @@ import quantsc.config as config
 from quantsc.core.timeseries import TimeSeries
 
 class Stock(TimeSeries):
-    def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None):
+    def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None,name=None):
         if data:
-            self.ticker = ticker
+            if name is not None:
+                self.name = name
+                self.ticker = None
+            else:
+                self.name = "Custom Stock"
         else:
             if interval is not None:
                 self.interval = self.is_valid_interval(interval)
             self.ticker = ticker
+            self.name = ticker
             stock_data = yf.download(ticker,start=start,end=end,interval=interval)
             series = pd.Series(data=stock_data['Open'],index=stock_data.index)
             super().__init__(series)
@@ -26,7 +31,7 @@ class Stock(TimeSeries):
             self.high = stock_data['High']
             self.dates = stock_data.index
         self.indicators = dict()
-
+        self.diff_count = 0
 
     def getIndicators(self):
         return self.indicators
@@ -42,6 +47,9 @@ class Stock(TimeSeries):
     def update_data(self, ticker, period = None):
         self.data = yf.download(ticker, period)
         self.indicators = dict()
+
+    def len(self):
+        return super().__len__()
 
     def get_data(self):
         return self.data
@@ -139,4 +147,29 @@ class Stock(TimeSeries):
         else:
             raise("Backend must be either 'plotly' or 'matplotlib!'")
 
+    # def sort_values(self, column = "Open"):
+        #df = pd.DataFrame()
+        #self.data
+
+    # ""
+    # def pairwise_sort(self):
+
+    # def sort_index(self):
+    # """
+    # Reminder: Sort all self.data(default to 'open') self.open,self.close,self.high,self.low
+    # """
+    def diff(self):
+        pass
+    def covariance(self):
+        """
+        def test_method(self,a,b,c,d):
+        we provide a description to the function test_method
+
+       :param a:
+       :param b:
+       :param c:
+       :param d:
+       :return:
+       """
+        pass
 
