@@ -170,25 +170,6 @@ class TimeSeries:
 
         return rslt_string
 
-    def take_diff(self, d):
-        """Takes a diff of the data d times
-
-        :param d: int
-        :return:
-        """
-        df = pd.DataFrame(self.data.values)
-        for i in range(d):
-            df = df.diff()
-        plt.plot(df)
-        plt.show()
-
-    def take_autocorrelation(self, d):
-        df = pd.DataFrame(self.data.values)
-        for i in range(d):
-            df = df.diff()
-        plot_acf(df.dropna())
-        plt.show()
-
     def take_partial_autocorrelation(self, d):
         df = pd.DataFrame(self.data.values)
         for i in range(d):
@@ -283,7 +264,7 @@ class TimeSeries:
         else:
             return TimeSeries(new_series)
 
-    def auto_covariance(self, lag=1, plot=False ):
+    def auto_correlation(self, lag=1, plot=False ):
         return self.data.autocorr(lag=lag)
 
     def mean(self):
@@ -292,7 +273,11 @@ class TimeSeries:
     def variance(self):
         return self.data.var()
 
+    def auto_covariance(self):
 
+
+    def cumsum(self):
+        return self.data.cumsum()
 
     def covariance_matrix(self, other):
         pass
