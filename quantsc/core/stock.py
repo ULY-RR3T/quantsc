@@ -8,15 +8,20 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import quantsc.config as config
 from quantsc.core.timeseries import TimeSeries
+import numbers
 
 class Stock(TimeSeries):
-    def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None,name=None):
+    def __init__(self, ticker=None,start=None,end=None,interval='1d ', data=None,name=None):
         if data:
             if name is not None:
                 self.name = name
                 self.ticker = None
             else:
                 self.name = "Custom Stock"
+            if isinstance(data,TimeSeries):
+                self.data = TimeSeries.data
+            else:
+                super().load_data(data)
         else:
             if interval is not None:
                 self.interval = self.is_valid_interval(interval)
@@ -104,11 +109,31 @@ class Stock(TimeSeries):
 
     def __add__(self, other):
         if isinstance(other, Stock):
-            return self.data + other.data
+            new_stock = Stock(data=self.data + other.data,name = f"({self.name}+{other.name})")
+            if None not in (self.open,other.open, self.close,other.close,self.high,other.high,self.low,other.low):
+                new_stock.open = self.open + other.open
+                new_stock.close = self.close + other.close
+                new_stock.high = self.high + other.high
+                new_stock.low = self.low + other.low
+            return new_stock
         elif isinstance(other, TimeSeries):
-            return self.data + other
+            new_stock = Stock(data=self.data + other.data,name = f"({self.name}+Series)")
+            if None not in (self.high,self.low,self.open,self.close):
+                new_stock.open = self.open + other.data
+                new_stock.close = self.close + other.data
+                new_stock.high = self.high + other.data
+                new_stock.low = self.low + other.data
+            return new_stock
+        elif isinstance(other,numbers.Number):
+            new_stock = Stock(data = self.data + other.data, name = f"{self.name}+{str(other)}")
+            if None not in (self.high,self.low,self.open,self.close):
+                new_stock.high = self.high + other
+                new_stock.low = self.low + other
+                new_stock.open = self.open + other
+                new_stock.close = self.close + other
+            return new_stock
         else:
-            raise Exception("Second object in addition is not an instance of TimeSeries or Stock.")
+            raise Exception("Add operation only supported for TimeSeries, Stock, int, and float.")
 
     def __sub__(self, other):
         if isinstance(other, Stock):
@@ -158,18 +183,31 @@ class Stock(TimeSeries):
     # """
     # Reminder: Sort all self.data(default to 'open') self.open,self.close,self.high,self.low
     # """
-    def diff(self):
-        pass
-    def covariance(self):
-        """
-        def test_method(self,a,b,c,d):
-        we provide a description to the function test_method
 
-       :param a:
-       :param b:
-       :param c:
-       :param d:
-       :return:
-       """
-        pass
+    def diff(self,shift=1,inplace=False):
+        if inplace:
+            self.data = self.data.diff(shift)
+            if None not in (self.high,self.low,self.open,self.close):
+                self.high = self.high.diff(shift)
+                self.low = self.low.diff(shift)
+                self.open = self.open.diff(shift)
+                self.close = self.close.diff(shift)
+            return self
+        else:
+            new_stock = Stock(self.data.diff(shift))
+            new_stock.high = self.high.diff(shift)
+            new_stock.low = self.low.diff(shift)
+            new_stock.open = self.open.diff(shift)
+            new_stock.close = self.close.diff(shift)
+            return new_stock
+
+    def autocov(self,lag):
+        return super().autocov(lag)
+
+    def autocov_plot(self, figsize, legend=False, title='', ylabel='', backend=None):
+        return super().autocov_plot(figsize=figsize, legend=legend, title=f"Auto Covariance plot for {self.name}")
+
+    def var(self):
+        return super().variance()
+
 
