@@ -1,10 +1,12 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
-setup(name='quantsc',
-      version='1.0',
-      description='Financial Library for Python',
-      author='Yuanhao Lu,Joanathan Qin,Aditya Prasad',
-      author_email='terryl@usc.edu',
-      url='https://www.quantsc.org',
-      packages=find_packages(),
-     )
+setup(
+    name='quantsc',
+    version='1.0.0',
+    packages=['quantsc', 'quantsc.core', 'quantsc.data', 'quantsc.data.__random'],
+    url='https://quantsc.org/',
+    license='MIT',
+    author='Yuanhao Lu, Jonathan Qin, Aditya Prasad ',
+    author_email='terryl@usc.edu',
+    description='A Quantitative Finance Library'
+)
