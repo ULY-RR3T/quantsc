@@ -11,8 +11,11 @@ from quantsc.core.timeseries import TimeSeries
 import numbers
 
 class Stock(TimeSeries):
-    def __init__(self, ticker=None,start=None,end=None,interval='1d ', data=None,name=None):
-        if data:
+    def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None,name=None):
+        if not isinstance(ticker,str) and ticker is not None:
+            data = ticker
+            ticker = ''
+        if data is not None:
             if name is not None:
                 self.name = name
                 self.ticker = None
@@ -22,6 +25,7 @@ class Stock(TimeSeries):
                 self.data = TimeSeries.data
             else:
                 super().load_data(data)
+                self.dates = self.data.index
         else:
             if interval is not None:
                 self.interval = self.is_valid_interval(interval)
@@ -37,6 +41,176 @@ class Stock(TimeSeries):
             self.dates = stock_data.index
         self.indicators = dict()
         self.diff_count = 0
+
+
+    def __add__(self, other):
+        if isinstance(other, Stock):
+            new_stock = Stock(self.data + other.data,name = f"({self.name}+{other.name})")
+            try:
+                new_stock.open = self.open + other.open
+                new_stock.close = self.close + other.close
+                new_stock.high = self.high + other.high
+                new_stock.low = self.low + other.low
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other, TimeSeries):
+            new_stock = Stock(self.data + other.data,name = f"({self.name}+Series)")
+            try:
+                new_stock.open = self.open + other.data
+                new_stock.close = self.close + other.data
+                new_stock.high = self.high + other.data
+                new_stock.low = self.low + other.data
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other,numbers.Number):
+            new_stock = Stock(self.data + other.data, name = f"{self.name}+{str(other)}")
+            try:
+                new_stock.high = self.high + other
+                new_stock.low = self.low + other
+                new_stock.open = self.open + other
+                new_stock.close = self.close + other
+            finally:
+                return new_stock.dropna()
+
+        else:
+            raise Exception("Add operation only supported for TimeSeries, Stock, int, and float.")
+
+    def __sub__(self, other):
+        if isinstance(other, Stock):
+            new_stock = Stock(self.data - other.data, name=f"({self.name}-{other.name})")
+            try:
+                new_stock.open = self.open - other.open
+                new_stock.close = self.close - other.close
+                new_stock.high = self.high - other.high
+                new_stock.low = self.low - other.low
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other, TimeSeries):
+            new_stock = Stock(self.data - other.data, name=f"({self.name}-Series)")
+            try:
+                new_stock.open = self.open - other.data
+                new_stock.close = self.close - other.data
+                new_stock.high = self.high - other.data
+                new_stock.low = self.low - other.data
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other, numbers.Number):
+            new_stock = Stock(self.data - other.data, name=f"{self.name}-{str(other)}")
+            try:
+                new_stock.high = self.high - other
+                new_stock.low = self.low - other
+                new_stock.open = self.open - other
+                new_stock.close = self.close - other
+            finally:
+                return new_stock.dropna()
+
+        else:
+            raise Exception("Subtraction operation only supported for TimeSeries, Stock, int, and float.")
+
+    def __neg__(self):
+        new_stock = Stock(self.data, name=f"-({self.name})")
+        new_stock.open = -(self.open)
+        new_stock.close = -(self.close)
+        new_stock.high = -(self.high)
+        new_stock.low = -(self.low)
+        return new_stock.dropna()
+
+    def __mul__(self, other):
+        if isinstance(other, Stock):
+            new_stock = Stock(self.data * other.data,name = f"({self.name}*{other.name})")
+            try:
+                new_stock.open = self.open * other.open
+                new_stock.close = self.close * other.close
+                new_stock.high = self.high * other.high
+                new_stock.low = self.low * other.low
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other, TimeSeries):
+            new_stock = Stock(self.data * other.data,name = f"({self.name}*Series)")
+            try:
+                new_stock.open = self.open * other.data
+                new_stock.close = self.close * other.data
+                new_stock.high = self.high * other.data
+                new_stock.low = self.low * other.data
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other,numbers.Number):
+            new_stock = Stock(self.data * other.data, name = f"{self.name}*{str(other)}")
+            try:
+                new_stock.high = self.high * other
+                new_stock.low = self.low * other
+                new_stock.open = self.open * other
+                new_stock.close = self.close * other
+            finally:
+                return new_stock.dropna()
+
+        else:
+            raise Exception("Multiplication for Stock only supported for TimeSeries, Stock, int, and float.")
+
+
+    def __truediv__(self, other):
+        if isinstance(other, Stock):
+            new_stock = Stock(self.data / other.data,name = f"({self.name}/{other.name})")
+            try:
+                new_stock.open = self.open / other.open
+                new_stock.close = self.close / other.close
+                new_stock.high = self.high / other.high
+                new_stock.low = self.low / other.low
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other, TimeSeries):
+            new_stock = Stock(self.data / other.data,name = f"({self.name}/Series)")
+            try:
+                new_stock.open = self.open / other.data
+                new_stock.close = self.close / other.data
+                new_stock.high = self.high / other.data
+                new_stock.low = self.low / other.data
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other,numbers.Number):
+            new_stock = Stock(self.data / other.data, name = f"{self.name}/{str(other)}")
+            try:
+                new_stock.high = self.high / other
+                new_stock.low = self.low / other
+                new_stock.open = self.open / other
+                new_stock.close = self.close / other
+            finally:
+                return new_stock.dropna()
+
+        else:
+            raise Exception("Division for Stock only supported for TimeSeries, Stock, int, and float.")
+
+    def __pow__(self, other):
+        if isinstance(other, Stock):
+            new_stock = Stock(self.data ** other.data,name = f"({self.name}^{other.name})")
+            try:
+                new_stock.open = self.open ** other.open
+                new_stock.close = self.close ** other.close
+                new_stock.high = self.high ** other.high
+                new_stock.low = self.low ** other.low
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other, TimeSeries):
+            new_stock = Stock(self.data ** other.data,name = f"({self.name}^Series)")
+            try:
+                new_stock.open = self.open ** other.data
+                new_stock.close = self.close ** other.data
+                new_stock.high = self.high ** other.data
+                new_stock.low = self.low ** other.data
+            finally:
+                return new_stock.dropna()
+        elif isinstance(other,numbers.Number):
+            new_stock = Stock(self.data ** other.data, name = f"{self.name}^{str(other)}")
+            try:
+                new_stock.high = self.high ** other
+                new_stock.low = self.low ** other
+                new_stock.open = self.open ** other
+                new_stock.close = self.close ** other
+            finally:
+                return new_stock.dropna()
+
+        else:
+            raise Exception("Division for Stock only supported for TimeSeries, Stock, int, and float.")
 
     def getIndicators(self):
         return self.indicators
@@ -56,11 +230,8 @@ class Stock(TimeSeries):
     def len(self):
         return super().__len__()
 
-    def get_data(self):
-        return self.data
-
-    def get_csv(self):
-        return self.data.to_csv(self.ticker+'.csv')
+    def to_csv(self):
+        return self.data.to_csv(self.name+'.csv')
 
     def get_earnings(self, ticker=None):  # , earnings_date: datetime):
         earning_data = si.get_earnings_history(self.ticker)
@@ -107,64 +278,22 @@ class Stock(TimeSeries):
     def dividends(self): # can have specified date for onwards
         return si.get_dividends(self.ticker)
 
-    def __add__(self, other):
-        if isinstance(other, Stock):
-            new_stock = Stock(data=self.data + other.data,name = f"({self.name}+{other.name})")
-            if None not in (self.open,other.open, self.close,other.close,self.high,other.high,self.low,other.low):
-                new_stock.open = self.open + other.open
-                new_stock.close = self.close + other.close
-                new_stock.high = self.high + other.high
-                new_stock.low = self.low + other.low
-            return new_stock
-        elif isinstance(other, TimeSeries):
-            new_stock = Stock(data=self.data + other.data,name = f"({self.name}+Series)")
-            if None not in (self.high,self.low,self.open,self.close):
-                new_stock.open = self.open + other.data
-                new_stock.close = self.close + other.data
-                new_stock.high = self.high + other.data
-                new_stock.low = self.low + other.data
-            return new_stock
-        elif isinstance(other,numbers.Number):
-            new_stock = Stock(data = self.data + other.data, name = f"{self.name}+{str(other)}")
-            if None not in (self.high,self.low,self.open,self.close):
-                new_stock.high = self.high + other
-                new_stock.low = self.low + other
-                new_stock.open = self.open + other
-                new_stock.close = self.close + other
-            return new_stock
-        else:
-            raise Exception("Add operation only supported for TimeSeries, Stock, int, and float.")
 
-    def __sub__(self, other):
-        if isinstance(other, Stock):
-            return self.data - other.data
-        elif isinstance(other, TimeSeries):
-            return self.data - other
-        else:
-            raise Exception("Second object in subtraction is not an instance of TimeSeries or Stock.")
-
-    def __mul__(self, other):
-        if isinstance(other, Stock):
-            return self.data * other.data
-        elif isinstance(other, TimeSeries):
-            return self.data * other
-        else:
-            raise Exception("Second object in multiplication is not an instance of TimeSeries or Stock.")
-
-    def plot(self,backend=None,type='candle'):
+    def plot(self,backend=None, style='candle', figsize=(8,6)):
         if backend is None:
             backend = config.config['plot_backend']
         if backend == "matplotlib":
-            plt.plot(self.data)
-            plt.show()
+            fig,ax = super().get_fig(figsize = figsize, title=self.name, xlabel='Date',ylabel='Price')
+            ax.plot(self.data)
+            fig.show()
         elif backend == "plotly":
-            if type == "candle":
+            if style == "candle":
                 fig = go.Figure(data=[go.Candlestick(x=self.dates,
                         open=self.open,
                         high=self.high,
                         low=self.low,
                         close=self.close)])
-            elif type == "line":
+            elif style == "line":
                 fig = px.line(self.data)
             else:
                 raise("type can only be 'candle' or 'line'")
@@ -192,22 +321,46 @@ class Stock(TimeSeries):
                 self.low = self.low.diff(shift)
                 self.open = self.open.diff(shift)
                 self.close = self.close.diff(shift)
+                self.diff_count += shift
+                self.name = f"{self.ticker}.diff({str(self.diff_count)})"
             return self
         else:
-            new_stock = Stock(self.data.diff(shift))
+            new_data = self.data.diff(shift)
+            new_stock = Stock(new_data)
             new_stock.high = self.high.diff(shift)
             new_stock.low = self.low.diff(shift)
             new_stock.open = self.open.diff(shift)
             new_stock.close = self.close.diff(shift)
-            return new_stock
+            new_stock.diff_count = self.diff_count + shift
+            new_stock.name = f"{self.ticker}.diff({str(new_stock.diff_count)})"
+            new_stock.ticker = self.ticker
+            return new_stock.dropna()
 
-    def autocov(self,lag):
+    def autocov(self,lag=1):
         return super().autocov(lag)
 
-    def autocov_plot(self, figsize, legend=False, title='', ylabel='', backend=None):
-        return super().autocov_plot(figsize=figsize, legend=legend, title=f"Auto Covariance plot for {self.name}")
+    def autocorr(self, lag=1, method='pearson'):
+        return super().autocorr(lag)
 
+    def autocov_plot(self, figsize = (8,6), legend=False, title='', backend=None):
+        return super().autocov_plot(figsize=figsize, legend=legend,
+                                    title=f"Auto Covariance plot for {self.name}",backend=backend)
+    def autocorr_plot(self, figsize = (8,6), legend=False, title='', backend=None,method='pearson'):
+        return super().autocorr_plot(figsize=figsize, legend=legend,
+                                    title=f"Auto Correlation plot for {self.name}",backend=backend,method=method)
     def var(self):
         return super().variance()
 
+    def dropna(self):
+        self.data = self.data.dropna()
+        try:
+            self.open = self.open.dropna()
+            self.close = self.close.dropna()
+            self.high = self.high.dropna()
+            self.low = self.low.dropna()
+        finally:
+            return self
+
+    def model_arima(self, p, d, q, plotResiduals=True, getSummary=True):
+        super().model_arima(p, d, q, plotResiduals=True, getSummary=True)
 

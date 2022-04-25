@@ -1,4 +1,7 @@
 import quantsc as qsc
+import pandas as pd
+import matplotlib.pyplot as plt
+import yfinance as yf
 
 class TestStockLoad():
     def testLoadStockFromTickerNoInterval(self,ticker="AAPL"):
@@ -43,16 +46,18 @@ if __name__ == "__main__":
     # load_test.testLoadStockFromTickerNoInterval("GE")
     # ge = qsc.Stock("GE",start="2022-1-1",end="2022-2-1")
     apple = qsc.Stock("AAPL",start="2022-1-1",end="2022-2-1")
-    #print(apple.pairwise_sort(ge))
-    #print(ge.sort_values())
-    # print(apple.variance(), apple.mean())
-    print(apple.autocov())
-    # print(apple.len)
-    #print(apple.pairwise_sort(ge))
-    #print(ge.pairwise_sort(apple))
-    #.plot(backend='plotly')
-    # operations_test = TestStockOperations()
-    # operations_test.testChangeBackend()
-    # operations_test.testAdd()
+    blackberry = qsc.Stock("BB")
+    # apple.plot()
+    # blackberry.diff(70).plot()
+    # appberry = apple ** blackberry
+    # appberry.dropna().plot()
+    apple.autocorr_plot()
+    a = (apple.diff(2) / blackberry)
+    print(a.close)
+    # a.plot(backend='plotly',style='candle')
+    # a.autocorr_plot()
 
-    # appberry.plot(backend='matplotlib')
+    # a.plot(backend = 'plotly')
+    # a.model_arima(2,2,1)
+
+

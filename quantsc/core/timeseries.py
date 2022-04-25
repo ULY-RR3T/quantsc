@@ -7,7 +7,7 @@ import statsmodels as sm
 
 import statsmodels.api as sm
 from scipy import stats
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.stattools import acf, pacf
 from statsmodels.tsa.arima.model import ARIMA
 from pandas import DataFrame
 import yfinance as yf
@@ -16,6 +16,7 @@ import plotly.express as px
 from quantsc import config
 import warnings
 import dateutil.parser
+from statsmodels.graphics.tsaplots import plot_acf
 
 
 class TimeSeries:
@@ -178,7 +179,7 @@ class TimeSeries:
         df = pd.DataFrame(self.data.values)
         for i in range(d):
             df = df.diff()
-        plot_pacf(df.dropna())
+        plt.plot(pacf(df.dropna()))
         plt.show()
 
     def model_arima(self, p, d, q, plotResiduals=True, getSummary=True, ):
@@ -260,7 +261,7 @@ class TimeSeries:
         if other.data.size != self.data.size:
             raise ("Length of two TimeSeries has to be the same!")
         new_index = [self_index for self_data, self_index, other_index, self_index
-                     in sorted(zip(other.data, self.data, other.data.index, self.data.index))]
+                     in sorted(zip(other.data, self.data, other.data.index, self.data.index),reverse=not ascending)]
         new_data = self.data[new_index]
         # new_data =[self.data[self_index] for other_index,self_index
         #              in sorted(zip(other.data.index,self.data.index))]
@@ -271,8 +272,15 @@ class TimeSeries:
         else:
             return TimeSeries(new_series)
 
-    def autocorr(self, lag=1, plot=False):
-        return self.data.autocorr(lag=lag)
+    def autocorr(self, lag=1, method='pearson'):
+        """
+
+        :param lag:
+        :param method: 'pearson','spearman','kendall'
+        :return:
+        """
+        # return self.data.corr(self.data.shift(lag),method=method)
+        return acf(self.data)[lag]
 
     def mean(self):
         return self.data.mean()
@@ -281,16 +289,18 @@ class TimeSeries:
         return self.data.var()
 
     def autocov(self, lag=1):
-        return self.data.cov(self.data.shift(lag=lag))
+        return self.data.cov(self.data.shift(lag))
 
-    def autocov_plot(self, figsize, legend=False, title='', ylabel='', backend=None):
+    def autocov_plot(self, figsize, legend=False, title='', ylabel='Autocovariance', backend=None):
+        if title == '':
+            title = f"Autocovariance plot"
         if backend is None:
             backend = config.config['plot_backend']
-        x_val = list(range(self.__len__()))
+        x_val = [i for i in range(len(self.data)) ]
         y_val = [self.autocov(x) for x in x_val]
         if backend == 'matplotlib':
-            fig, ax = self.get_fig(figsize, ylabel=ylabel, title=f"autocov_plot {title}")
-            ax.plot(x_val, y_val, label="autocov")
+            fig, ax = self.get_fig(figsize, xlabel='Lag', ylabel=ylabel, title=title)
+            ax.plot(y_val, label="autocov")
             if legend:
                 ax.legend()
             fig.show()
@@ -298,6 +308,33 @@ class TimeSeries:
 
         elif backend == 'plotly':
             fig = go.Figure(data=go.Scatter(x=x_val, y=y_val))
+            fig.show()
+            return fig
+
+    def autocorr_plot(self, figsize, legend=False, title='', ylabel='Autocorrelation', backend=None,method='pearson'):
+        if backend is None:
+            backend = config.config['plot_backend']
+        print(self.data)
+        print(acf(self.data))
+        y_val = acf(self.data)
+        if backend == 'matplotlib':
+            fig, ax = self.get_fig(figsize, xlabel='Lag', ylabel=ylabel, title=title)
+            z95 = 1.959963984540054
+            z99 = 2.5758293035489004
+            n = len(self)
+            ax.axhline(y=z99 / np.sqrt(n), linestyle="--", color="grey")
+            ax.axhline(y=z95 / np.sqrt(n), color="grey")
+            ax.axhline(y=0.0, color="black")
+            ax.axhline(y=-z95 / np.sqrt(n), color="grey")
+            ax.axhline(y=-z99 / np.sqrt(n), linestyle="--", color="grey")
+            ax.plot(y_val, label="autocov")
+            if legend:
+                ax.legend()
+            fig.show()
+            return fig, ax
+
+        elif backend == 'plotly':
+            fig = go.Figure(data=go.Scatter(x=[x for x in range(len(y_val))], y=y_val))
             fig.show()
             return fig
 
@@ -310,7 +347,7 @@ class TimeSeries:
     def covariance_matrix(self, other):
         pass
 
-    def get_fig(self, figsize=(8, 6), title=None, xlabel='Date', ylabel=''):
+    def get_fig(self, figsize=(8, 6), xlabel='', ylabel='',title=None):
         """ Get a matplotlib.pyplot figure with the specified attributes
 
         :param figsize:
