@@ -279,11 +279,11 @@ class Stock(TimeSeries):
         return si.get_dividends(self.ticker)
 
 
-    def plot(self,backend=None, style='candle', figsize=(8,6)):
+    def plot(self,backend=None, style='candle', figsize=(8,6),ylabel='Price'):
         if backend is None:
             backend = config.config['plot_backend']
         if backend == "matplotlib":
-            fig,ax = super().get_fig(figsize = figsize, title=self.name, xlabel='Date',ylabel='Price')
+            fig,ax = super().get_fig(figsize = figsize, title=self.name, xlabel='Date',ylabel=ylabel)
             ax.plot(self.data)
             fig.show()
         elif backend == "plotly":
@@ -293,6 +293,7 @@ class Stock(TimeSeries):
                         high=self.high,
                         low=self.low,
                         close=self.close)])
+                fig.update_layout(title_text = self.name,xaxis_title = 'Date', yaxis_title=ylabel)
             elif style == "line":
                 fig = px.line(self.data)
             else:
