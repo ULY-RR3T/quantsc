@@ -182,7 +182,7 @@ class TimeSeries:
         plt.plot(pacf(df.dropna()))
         plt.show()
 
-    def model_arima(self, p, d, q, plotResiduals=True, getSummary=True, ):
+    def arima(self, p, d, q, plotResiduals=True, getSummary=True, ):
         df = pd.DataFrame(self.data.values)
         model = ARIMA(df, order=(p, d, q))
         model_fit = model.fit()

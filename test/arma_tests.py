@@ -5,7 +5,7 @@ def generate_stationary():
     apple_stock = Stock("AAPL")
     #print(apple_stock.get_data())
     dividends = apple_stock.dividends()
-    earnings = apple_stock.get_earnings()
+    earnings = apple_stock.earnings()
     print(dividends, earnings)
     #print(apple_stock.get_earnings("APPL"))
     #tsApple = TimeSeries(apple_stock.get_data())
