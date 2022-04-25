@@ -14,7 +14,7 @@ setup(
        'pandas',
         'numpy',
         'yfinance',
-        'statsmodels',
+        'statsmodels==0.13.2',
         'scipy',
         'matplotlib',
         'plotly',
