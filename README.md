@@ -1,1 +1,1 @@
-# QSC
+# quantsc
