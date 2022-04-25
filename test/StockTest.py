@@ -51,9 +51,9 @@ if __name__ == "__main__":
     # blackberry.diff(70).plot()
     # appberry = apple ** blackberry
     # appberry.dropna().plot()
-    apple.autocorr_plot()
-    a = (apple.diff(2) / blackberry)
-    print(a.close)
+    apple.arima(1,1,1)
+    # a = (apple.diff(2) / blackberry)
+    # print(a.close)
     # a.plot(backend='plotly',style='candle')
     # a.autocorr_plot()
 

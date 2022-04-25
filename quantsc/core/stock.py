@@ -233,7 +233,7 @@ class Stock(TimeSeries):
     def to_csv(self):
         return self.data.to_csv(self.name+'.csv')
 
-    def get_earnings(self, ticker=None):  # , earnings_date: datetime):
+    def earnings(self):  # , earnings_date: datetime):
         earning_data = si.get_earnings_history(self.ticker)
         df_eps = pd.DataFrame.from_dict(earning_data)
         eps_data = pd.DataFrame(df_eps["epsactual"])
@@ -241,7 +241,7 @@ class Stock(TimeSeries):
         self.indicators["earning"] = eps_data
         return self.indicators["earning"]
 
-    def get_epsestimate(self):
+    def eps_expected(self):
         earning_data = si.get_earnings_history(self.ticker)
         df_eps = pd.DataFrame.from_dict(earning_data)
         eps_data = df_eps["epsestimate"]
@@ -249,10 +249,10 @@ class Stock(TimeSeries):
         self.indicators["epsestimate"] = eps_data
         return self.indicators["epsestimate"]
 
-    def get_epsactual(self):
-        return self.get_earnings()
+    def eps(self):
+        return self.earnings()
 
-    def get_epssurprisepct(self):
+    def eps_suprise(self):
         earning_data = si.get_earnings_history(self.ticker)
         df_eps = pd.DataFrame.from_dict(earning_data)
         eps_data = df_eps["epssurprisepct"]
@@ -361,6 +361,6 @@ class Stock(TimeSeries):
         finally:
             return self
 
-    def model_arima(self, p, d, q, plotResiduals=True, getSummary=True):
-        super().model_arima(p, d, q, plotResiduals=True, getSummary=True)
+    def arima(self, p, d, q, plotResiduals=True, getSummary=True):
+        super().arima(p, d, q, plotResiduals=True, getSummary=True)
 

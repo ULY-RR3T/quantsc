@@ -8,7 +8,7 @@ import statsmodels as sm
 import statsmodels.api as sm
 from scipy import stats
 from statsmodels.tsa.stattools import acf, pacf
-from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.arima.model import ARIMA
 from pandas import DataFrame
 import yfinance as yf
 import plotly.graph_objects as go
@@ -182,7 +182,7 @@ class TimeSeries:
         plt.plot(pacf(df.dropna()))
         plt.show()
 
-    def model_arima(self, p, d, q, plotResiduals=True, getSummary=True, ):
+    def arima(self, p, d, q, plotResiduals=True, getSummary=True, ):
         df = pd.DataFrame(self.data.values)
         model = ARIMA(df, order=(p, d, q))
         model_fit = model.fit()
