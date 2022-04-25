@@ -8,7 +8,7 @@ import statsmodels as sm
 import statsmodels.api as sm
 from scipy import stats
 from statsmodels.tsa.stattools import acf, pacf
-from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.arima_model import ARIMA
 from pandas import DataFrame
 import yfinance as yf
 import plotly.graph_objects as go
