@@ -36,9 +36,9 @@ class Stock(TimeSeries):
             self.name = ticker
             try:
                 if None in(start,end):
-                    stock_data = yf.download(ticker,interval=interval)
+                    stock_data = yf.download(ticker,interval=interval)[:-1]
                 else:
-                    stock_data = yf.download(ticker,start=start,end=end,interval=interval)
+                    stock_data = yf.download(ticker,start=start,end=end,interval=interval)[:-1]
             except Exception as e:
                 print(str(e))
             series = pd.Series(data=stock_data['Open'],index=stock_data.index)
