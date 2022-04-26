@@ -1,15 +1,18 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from statsmodels.tsa.stattools import acf, pacf
-from statsmodels.tsa.arima.model import ARIMA
-from pandas import DataFrame
-import yfinance as yf
-import plotly.graph_objects as go
-import plotly.express as px
-from quantsc import config
 import warnings
+
 import dateutil.parser
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import yfinance as yf
+from pandas import DataFrame
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.stattools import acf
+from statsmodels.tsa.stattools import pacf
+
+from quantsc import config
 
 
 class TimeSeries:

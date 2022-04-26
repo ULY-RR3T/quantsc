@@ -1,17 +1,17 @@
-import datetime
+import numbers
 
 import pandas as pd
-import yfinance as yf
-import yahoo_fin.stock_info as si
-#http://theautomatic.net/yahoo_fin-documentation/
-#http://theautomatic.net/yahoo_fin-documentation/#methods
-import plotly.graph_objects as go
 import plotly.express as px
+# http://theautomatic.net/yahoo_fin-documentation/
+# http://theautomatic.net/yahoo_fin-documentation/#methods
+import plotly.graph_objects as go
+import yahoo_fin.stock_info as si
+import yfinance as yf
+
+import quantsc as qsc
 import quantsc.config as config
 from quantsc.core.timeseries import TimeSeries
-import quantsc as qsc
-import numbers
-from dateutil import parser
+
 
 class Stock(TimeSeries):
     def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None,name=None):
@@ -239,7 +239,7 @@ class Stock(TimeSeries):
         earning_data = si.get_earnings_history(self.ticker)
         df_eps = pd.DataFrame.from_dict(earning_data)
         eps_data = pd.DataFrame(df_eps["epsactual"])
-        eps_data.index = df_eps["startdatetime"]
+        eps_data.index = qsc.round_dates(df_eps["startdatetime"])
         self.indicators["earning"] = eps_data
         return self.indicators["earning"]
 
@@ -262,7 +262,7 @@ class Stock(TimeSeries):
         earning_data = si.get_earnings_history(self.ticker)
         df_eps = pd.DataFrame.from_dict(earning_data)
         eps_data = df_eps["epssurprisepct"]
-        eps_data.index = df_eps["startdatetime"]
+        eps_data.index = qsc.round_dates(df_eps["startdatetime"])
         self.indicators["epssurprisepct"] = eps_data
         return self.indicators["epssurprisepct"]
 

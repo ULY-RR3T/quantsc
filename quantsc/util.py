@@ -1,7 +1,8 @@
-import quantsc as qsc
-from datetime import datetime, timedelta
 import pandas as pd
 from dateutil import parser
+
+import quantsc as qsc
+
 
 def change_plot_backend(backend):
     if backend not in qsc.config.config['supported_plot_backend']:
@@ -14,10 +15,11 @@ def update_plotly_param():
         pyo.init_notebook_mode()
 
 # def round_dates(date_):
-def round_dates(dates_array,freq = 'D'):
+def round_dates(dates_array,freq = 'D',parse=True):
     rounded_arr = []
     for time in dates_array:
-        time_obj = parser.parse(time)
-        time_pd = pd.Timestamp(time_obj).round(freq=freq)
+        if parse:
+            time = parser.parse(time)
+        time_pd = pd.Timestamp(time).round(freq=freq)
         rounded_arr.append(time_pd)
     return rounded_arr
