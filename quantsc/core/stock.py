@@ -1,14 +1,17 @@
+import numbers
+
 import pandas as pd
-import yfinance as yf
-import yahoo_fin.stock_info as si
-#http://theautomatic.net/yahoo_fin-documentation/
-#http://theautomatic.net/yahoo_fin-documentation/#methods
-import plotly.graph_objects as go
 import plotly.express as px
-import matplotlib.pyplot as plt
+# http://theautomatic.net/yahoo_fin-documentation/
+# http://theautomatic.net/yahoo_fin-documentation/#methods
+import plotly.graph_objects as go
+import yahoo_fin.stock_info as si
+import yfinance as yf
+
+import quantsc as qsc
 import quantsc.config as config
 from quantsc.core.timeseries import TimeSeries
-import numbers
+
 
 class Stock(TimeSeries):
     def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None,name=None):
@@ -147,7 +150,6 @@ class Stock(TimeSeries):
         else:
             raise Exception("Multiplication for Stock only supported for TimeSeries, Stock, int, and float.")
 
-
     def __truediv__(self, other):
         if isinstance(other, Stock):
             new_stock = Stock(self.data / other.data,name = f"({self.name}/{other.name})")
@@ -237,15 +239,19 @@ class Stock(TimeSeries):
         earning_data = si.get_earnings_history(self.ticker)
         df_eps = pd.DataFrame.from_dict(earning_data)
         eps_data = pd.DataFrame(df_eps["epsactual"])
-        eps_data.index = df_eps["startdatetime"]
+        eps_data.index = qsc.round_dates(df_eps["startdatetime"])
         self.indicators["earning"] = eps_data
         return self.indicators["earning"]
 
     def eps_expected(self):
         earning_data = si.get_earnings_history(self.ticker)
+        # print(qsc.round_dates(list(earning_data.index())))
+        # earning_data.index = pd.Series(earning_data.index).dt.round('D').values
         df_eps = pd.DataFrame.from_dict(earning_data)
+        # df_eps.index = pd.Series(df_eps.index).dt.round('D').values
         eps_data = df_eps["epsestimate"]
-        eps_data.index = df_eps["startdatetime"]
+        eps_index = qsc.round_dates(df_eps["startdatetime"])
+        eps_data.index = eps_index
         self.indicators["epsestimate"] = eps_data
         return self.indicators["epsestimate"]
 
@@ -256,20 +262,20 @@ class Stock(TimeSeries):
         earning_data = si.get_earnings_history(self.ticker)
         df_eps = pd.DataFrame.from_dict(earning_data)
         eps_data = df_eps["epssurprisepct"]
-        eps_data.index = df_eps["startdatetime"]
+        eps_data.index = qsc.round_dates(df_eps["startdatetime"])
         self.indicators["epssurprisepct"] = eps_data
         return self.indicators["epssurprisepct"]
 
     def balance_sheet(self, yearly = True):
-        self.indicators["balance_sheet"] = si.get_balance_sheet(self.ticker, yearly)
+        self.indicators["balance_sheet"] = (si.get_balance_sheet(self.ticker, yearly) // 100).T
         return self.indicators["balance_sheet"]
 
     def cash_flow(self, yearly = True):
-        self.indicators["cash_flow"] = si.get_cash_flow(self.ticker, yearly)
+        self.indicators["cash_flow"] = (si.get_cash_flow(self.ticker, yearly) // 100).T
         return self.indicators["cash_flow"]
 
     def income_statement(self, yearly = True):
-        self.indicators["income_statement"] = si.get_income_statement(self.ticker, yearly)
+        self.indicators["income_statement"] = si.get_income_statement(self.ticker, yearly) // 100
         return self.indicators["income_statement"]
 
     def next_earnings_date(self):
@@ -279,11 +285,11 @@ class Stock(TimeSeries):
         return si.get_dividends(self.ticker)
 
 
-    def plot(self,backend=None, style='candle', figsize=(8,6)):
+    def plot(self,backend=None, style='candle', figsize=(8,6),ylabel='Price'):
         if backend is None:
             backend = config.config['plot_backend']
         if backend == "matplotlib":
-            fig,ax = super().get_fig(figsize = figsize, title=self.name, xlabel='Date',ylabel='Price')
+            fig,ax = super().get_fig(figsize = figsize, title=self.name, xlabel='Date',ylabel=ylabel)
             ax.plot(self.data)
             fig.show()
         elif backend == "plotly":
@@ -293,6 +299,7 @@ class Stock(TimeSeries):
                         high=self.high,
                         low=self.low,
                         close=self.close)])
+                fig.update_layout(title_text = self.name,xaxis_title = 'Date', yaxis_title=ylabel)
             elif style == "line":
                 fig = px.line(self.data)
             else:

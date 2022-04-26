@@ -1,22 +1,18 @@
-import pandas as pd
-import numpy as np
-import plotly.express as px
-import matplotlib.pyplot as plt
-import datetime
-import statsmodels as sm
-
-import statsmodels.api as sm
-from scipy import stats
-from statsmodels.tsa.stattools import acf, pacf
-from statsmodels.tsa.arima.model import ARIMA
-from pandas import DataFrame
-import yfinance as yf
-import plotly.graph_objects as go
-import plotly.express as px
-from quantsc import config
 import warnings
+
 import dateutil.parser
-from statsmodels.graphics.tsaplots import plot_acf
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import yfinance as yf
+from pandas import DataFrame
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.stattools import acf
+from statsmodels.tsa.stattools import pacf
+
+from quantsc import config
 
 
 class TimeSeries:
@@ -188,6 +184,7 @@ class TimeSeries:
         model_fit = model.fit()
         if getSummary:
             print(model_fit.summary())
+        print(type(model_fit.resid))
         residuals = DataFrame(model_fit.resid)
         if plotResiduals:
             fig, ax = plt.subplots(1, 2)

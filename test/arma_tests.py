@@ -1,4 +1,4 @@
-from qsc.core import Stock
+from quantsc.core import Stock
 
 
 def generate_stationary():
