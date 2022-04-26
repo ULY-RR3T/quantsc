@@ -1,3 +1,5 @@
+import datetime
+
 import pandas as pd
 import yfinance as yf
 import yahoo_fin.stock_info as si
@@ -5,10 +7,11 @@ import yahoo_fin.stock_info as si
 #http://theautomatic.net/yahoo_fin-documentation/#methods
 import plotly.graph_objects as go
 import plotly.express as px
-import matplotlib.pyplot as plt
 import quantsc.config as config
 from quantsc.core.timeseries import TimeSeries
+import quantsc as qsc
 import numbers
+from dateutil import parser
 
 class Stock(TimeSeries):
     def __init__(self, ticker=None,start=None,end=None,interval='1d', data=None,name=None):
@@ -242,9 +245,13 @@ class Stock(TimeSeries):
 
     def eps_expected(self):
         earning_data = si.get_earnings_history(self.ticker)
+        # print(qsc.round_dates(list(earning_data.index())))
+        # earning_data.index = pd.Series(earning_data.index).dt.round('D').values
         df_eps = pd.DataFrame.from_dict(earning_data)
+        # df_eps.index = pd.Series(df_eps.index).dt.round('D').values
         eps_data = df_eps["epsestimate"]
-        eps_data.index = df_eps["startdatetime"]
+        eps_index = qsc.round_dates(df_eps["startdatetime"])
+        eps_data.index = eps_index
         self.indicators["epsestimate"] = eps_data
         return self.indicators["epsestimate"]
 

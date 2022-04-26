@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
-from qsc.core import TimeSeries
-from qsc import data
+from quantsc.core import TimeSeries
+from quantsc import data
+import quantsc as qsc
 
 
 # from data.__random import seasonal

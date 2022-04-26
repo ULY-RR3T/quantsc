@@ -1,12 +1,6 @@
 import pandas as pd
 import numpy as np
-import plotly.express as px
 import matplotlib.pyplot as plt
-import datetime
-import statsmodels as sm
-
-import statsmodels.api as sm
-from scipy import stats
 from statsmodels.tsa.stattools import acf, pacf
 from statsmodels.tsa.arima.model import ARIMA
 from pandas import DataFrame
@@ -16,7 +10,6 @@ import plotly.express as px
 from quantsc import config
 import warnings
 import dateutil.parser
-from statsmodels.graphics.tsaplots import plot_acf
 
 
 class TimeSeries:
