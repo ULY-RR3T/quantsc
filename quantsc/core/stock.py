@@ -34,7 +34,13 @@ class Stock(TimeSeries):
                 self.interval = self.is_valid_interval(interval)
             self.ticker = ticker
             self.name = ticker
-            stock_data = yf.download(ticker,start=start,end=end,interval=interval)
+            try:
+                if None in(start,end):
+                    stock_data = yf.download(ticker,interval=interval)
+                else:
+                    stock_data = yf.download(ticker,start=start,end=end,interval=interval)
+            except Exception as e:
+                print(str(e))
             series = pd.Series(data=stock_data['Open'],index=stock_data.index)
             super().__init__(series)
             self.open = stock_data['Open']
@@ -218,11 +224,11 @@ class Stock(TimeSeries):
         return self.indicators
 
     def is_valid_interval(self, period):
-        valid_period = ['1d','5d','1mo','3mo','6mo','1y','2y','5y','10y','ytd','max']
+        valid_period = ['1m', '2m', '5m', '15m', '30m', '60m', '90m','1h','1d','5d','1mo','3mo','6mo','1y','2y','5y','10y','ytd','max']
         if period in valid_period:
             return period
         else:
-            raise("Interval must be one of '1d','5d','1mo','3mo','6mo','1y','2y','5y','10y','ytd','max'!")
+            raise("Interval must be one of '1m','2m','5m','15m','30m','60m','90m','1h','1d','5d','1mo','3mo','6mo','1y','2y','5y','10y','ytd','max'!")
             return None
 
     def update_data(self, ticker, period = None):

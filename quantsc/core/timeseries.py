@@ -311,8 +311,6 @@ class TimeSeries:
     def autocorr_plot(self, figsize, legend=False, title='', ylabel='Autocorrelation', backend=None,method='pearson'):
         if backend is None:
             backend = config.config['plot_backend']
-        print(self.data)
-        print(acf(self.data))
         y_val = acf(self.data)
         if backend == 'matplotlib':
             fig, ax = self.get_fig(figsize, xlabel='Lag', ylabel=ylabel, title=title)
