@@ -267,11 +267,11 @@ class Stock(TimeSeries):
         return self.indicators["epssurprisepct"]
 
     def balance_sheet(self, yearly = True):
-        self.indicators["balance_sheet"] = si.get_balance_sheet(self.ticker, yearly) // 100
+        self.indicators["balance_sheet"] = (si.get_balance_sheet(self.ticker, yearly) // 100).T
         return self.indicators["balance_sheet"]
 
     def cash_flow(self, yearly = True):
-        self.indicators["cash_flow"] = si.get_cash_flow(self.ticker, yearly) // 100
+        self.indicators["cash_flow"] = (si.get_cash_flow(self.ticker, yearly) // 100).T
         return self.indicators["cash_flow"]
 
     def income_statement(self, yearly = True):
