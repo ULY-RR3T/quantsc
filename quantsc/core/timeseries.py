@@ -188,6 +188,7 @@ class TimeSeries:
         model_fit = model.fit()
         if getSummary:
             print(model_fit.summary())
+        print(type(model_fit.resid))
         residuals = DataFrame(model_fit.resid)
         if plotResiduals:
             fig, ax = plt.subplots(1, 2)

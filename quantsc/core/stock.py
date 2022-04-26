@@ -147,7 +147,6 @@ class Stock(TimeSeries):
         else:
             raise Exception("Multiplication for Stock only supported for TimeSeries, Stock, int, and float.")
 
-
     def __truediv__(self, other):
         if isinstance(other, Stock):
             new_stock = Stock(self.data / other.data,name = f"({self.name}/{other.name})")
@@ -261,15 +260,15 @@ class Stock(TimeSeries):
         return self.indicators["epssurprisepct"]
 
     def balance_sheet(self, yearly = True):
-        self.indicators["balance_sheet"] = si.get_balance_sheet(self.ticker, yearly)
+        self.indicators["balance_sheet"] = si.get_balance_sheet(self.ticker, yearly) // 100
         return self.indicators["balance_sheet"]
 
     def cash_flow(self, yearly = True):
-        self.indicators["cash_flow"] = si.get_cash_flow(self.ticker, yearly)
+        self.indicators["cash_flow"] = si.get_cash_flow(self.ticker, yearly) // 100
         return self.indicators["cash_flow"]
 
     def income_statement(self, yearly = True):
-        self.indicators["income_statement"] = si.get_income_statement(self.ticker, yearly)
+        self.indicators["income_statement"] = si.get_income_statement(self.ticker, yearly) // 100
         return self.indicators["income_statement"]
 
     def next_earnings_date(self):
