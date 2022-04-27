@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='quantsc',
-    version='1.0.1.2',
+    version='1.0.1.3',
     packages=['quantsc', 'quantsc.core', 'quantsc.data', 'quantsc.data.__random'],
     url='https://quantsc.org/',
     license='MIT',

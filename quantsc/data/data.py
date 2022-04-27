@@ -11,10 +11,6 @@ def __get_date():
     pass
 
 def generate_random(range,generate_type = "seasonal"):
-    print("Go Home!")
-
-    return
-
     today_str = datetime.today().strftime("%Y-%m-%d")
     start_str = (datetime.today() - timedelta(days=6)).strftime("%Y-%m-%d")
     if generate_type =="seasonal":

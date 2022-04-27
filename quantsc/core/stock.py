@@ -376,4 +376,3 @@ class Stock(TimeSeries):
 
     def arima(self, p, d, q, plotResiduals=True, getSummary=True):
         super().arima(p, d, q, plotResiduals=True, getSummary=True)
-
